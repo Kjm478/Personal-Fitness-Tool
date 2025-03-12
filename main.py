@@ -1,56 +1,29 @@
-from langflow.load import run_flow_from_json
-from dotenv import load_dotenv
 import requests
 from typing import Optional
 import os
 
-BASE_API_URL = "https://api.langflow.astra.datastax.com"
-APPLICATION_TOKEN = os.getenv("APPLICATION_TOKEN")
+BASE_API_URL = "http://127.0.0.1:7860"
 
-
-load_dotenv()
-
-def ask_ai(question):
-  TWEAKS = {
-    "TextInput-fanPK": {
-      "input_value": question
-    },
-    "TextInput-CXuEG": {
-      "input_value": "profile"
-    },
-    }
-  result = run_flow_from_json(flow = "AskAI.json", 
-                              input_type= "message", 
-                              fallback_to_env_vars=True,
-                              tweaks=TWEAKS)
-  
-  return result[0].outputs[0].results["text"].data["text"]
 
 def get_askai(question): 
   
-  LANGFLOW_ID = "24b19386-5be7-48db-97af-c55ad05efe6b"
-  ENDPOINT = "askai" # The endpoint name of the flow
-  
   TWEAKS = {
-    "TextInput-fanPK": {
+    "TextInput-3vZ2Z": {
       "input_value": question
-    },
-    "TextInput-CXuEG": {
-      "input_value": "profile"
-    },
+     },
     }
-  return run_flow("", endpoint = ENDPOINT,langflow_id= LANGFLOW_ID,  tweaks=TWEAKS, application_token=APPLICATION_TOKEN)
+  return run_flow("", endpoint = "askai",langflow_id= "4d835698-5b3a-42aa-be1b-15e65fc2b676",  tweaks=TWEAKS)
 
 def get_macros(profile, goals):
   TWEAKS = {
-    "TextInput-3YLwx": {
+    "TextInput-g8OEn": {
       "input_value": goals
     }, 
-    "TextInput-niwMA": {
+    "TextInput-Dfbwd": {
       "input_value": profile
     },
     }
-  return run_flow("", endpoint = "macros",langflow_id= "24b19386-5be7-48db-97af-c55ad05efe6b",  tweaks=TWEAKS, application_token=APPLICATION_TOKEN)
+  return run_flow("", endpoint = "macros",langflow_id= "f9586dee-c724-486d-8589-e3f7d4f64b8e" , tweaks=TWEAKS)
 
 def run_flow(message: str,
   endpoint: str,
@@ -59,7 +32,7 @@ def run_flow(message: str,
   input_type: str = "chat",
   tweaks: Optional[dict] = None,
   application_token: Optional[str] = None) -> dict:
-    api_url = f"{BASE_API_URL}/lf/{langflow_id}/api/v1/run/{endpoint}"
+    api_url = f"{BASE_API_URL}/api/v1/run/{endpoint}"
 
     payload = {
         "input_value": message,
@@ -71,10 +44,14 @@ def run_flow(message: str,
         payload["tweaks"] = tweaks
     if application_token:
         headers = {"Authorization": "Bearer " + application_token, "Content-Type": "application/json"}
-    response = requests.post(api_url, json=payload, headers=headers)
-  
+    response = requests.post(api_url, json=payload, headers=headers, timeout=60)
+    print(response.json())
+    print(response.status_code)
+    print(response.text)
     return response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"]
+ 
 
-
-
+print("\n")
+res = get_macros("What is 300 + 200", "I want to be a data scientist")
+print(res)
 

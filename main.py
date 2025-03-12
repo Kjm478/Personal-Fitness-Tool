@@ -60,10 +60,6 @@ def run_flow(message: str,
     return response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"]
 
 
-result = get_macros("name: Kennedy , age: 27 , weight: 80kgs, 175cm", "muscle gain")  
-print(result)
-print("\n")
-result = get_askai("What is the best workout for muscle gain?", "name: Kennedy , age: 27 , weight: 80kgs, 175cm")
-print(result)
+
 
 

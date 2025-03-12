@@ -10,7 +10,23 @@ APPLICATION_TOKEN = os.getenv("APPLICATION_TOKEN")
 
 load_dotenv()
 
-def get_askai(question, profile): 
+def ask_ai(question):
+  TWEAKS = {
+    "TextInput-fanPK": {
+      "input_value": question
+    },
+    "TextInput-CXuEG": {
+      "input_value": "profile"
+    },
+    }
+  result = run_flow_from_json(flow = "AskAI.json", 
+                              input_type= "message", 
+                              fallback_to_env_vars=True,
+                              tweaks=TWEAKS)
+  
+  return result[0].outputs[0].results["text"].data["text"]
+
+def get_askai(question): 
   
   LANGFLOW_ID = "24b19386-5be7-48db-97af-c55ad05efe6b"
   ENDPOINT = "askai" # The endpoint name of the flow
@@ -20,7 +36,7 @@ def get_askai(question, profile):
       "input_value": question
     },
     "TextInput-CXuEG": {
-      "input_value": profile
+      "input_value": "profile"
     },
     }
   return run_flow("", endpoint = ENDPOINT,langflow_id= LANGFLOW_ID,  tweaks=TWEAKS, application_token=APPLICATION_TOKEN)
@@ -58,7 +74,6 @@ def run_flow(message: str,
     response = requests.post(api_url, json=payload, headers=headers)
   
     return response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"]
-
 
 
 

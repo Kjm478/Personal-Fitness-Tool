@@ -1,5 +1,6 @@
 import streamlit as st
-from .profiles import create_profile, get_notes, get_profile
+from profiles import create_profile, get_notes, get_profile
+from form_submit import update_personal_data, add_note, delete_note
 
 st.title("Personal Fitness Tool")
 
@@ -13,11 +14,12 @@ def personal_data_form():
         
         name  = st.text_input("Name", value=profile["general"]["name"])
         age  = st.number_input("Age", min_value=1, max_value=120 , step=1, value=profile["general"]["age"])
-        weight = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, step=0.1, value=profile["general"]["weight"])
-        height = st.number_input("Height (cm)", min_value=0.0 ,max_value=250.0, step = 0.1, value=profile["general"]["height"])
+        weight = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, step=0.1, value=float(profile["general"]["weight"]))
+        height = st.number_input("Height (cm)", min_value=0.0 ,max_value=250.0, step = 0.1, value=float(profile["general"]["height"]))
         genders = ["Male", "Female"]
         gender = st.radio('Gender', genders, genders.index(profile["general"].get("gender", "Male")))
-        activities = st.selectbox("Activity Level", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Super Active"] , index=profile["general"].get("activity", 0))     
+        activities_level = ["Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Extra Active"]
+        activities = st.selectbox("Activity Level", activities_level , index= activities_level.index(profile["general"].get("Activity Level", "Lightly Active")))     
         
         personal_data_submit = st.form_submit_button("Submit")
         
@@ -25,7 +27,7 @@ def personal_data_form():
             if all([name, age, weight, height, gender, activities]):
                 with st.spinner("Saving your data..."):
                     # Save data to database
-                    
+                    update_personal_data(profile, "general", name = name , weight = weight, height = height , gender = gender, activity = activities, age = age)
                     st.success("Data saved successfully!")
             else:
                 st.warning("Please fill out all fields")

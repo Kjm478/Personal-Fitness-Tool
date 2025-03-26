@@ -1,5 +1,5 @@
 from datetime import datetime
-from .db import personal_data_collection, notes_collection
+from db import personal_data_collection, notes_collection
 
 def update_personal_data(existing, update_type, **kwargs):
     if update_type == "goals":

@@ -40,10 +40,10 @@ def get_askai(question, profile):
 def get_macros(profile, goals):
   TWEAKS = {
     "TextInput-g8OEn": {
-      "input_value": goals
+      "input_value": ",".join(goals)
     }, 
     "TextInput-Dfbwd": {
-      "input_value": profile
+      "input_value": dict_to_string(profile)
     },
     }
   return run_flow("", endpoint = "macros",langflow_id= "f9586dee-c724-486d-8589-e3f7d4f64b8e" , tweaks=TWEAKS)

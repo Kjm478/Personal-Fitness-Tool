@@ -116,7 +116,7 @@ def forms():
     personal_data_form()
     goals_form()
     macros()
-    notes_add()
+    #notes_add()
     
 if __name__ == "__main__":
     forms()

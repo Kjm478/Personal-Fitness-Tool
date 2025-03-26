@@ -2,8 +2,11 @@ import requests
 from typing import Optional
 import os
 import json 
+from dotenv import load_dotenv
 
-BASE_API_URL = "http://127.0.0.1:7860"
+load_dotenv()
+
+BASE_API_URL = "http://127.0.0.1:7861"
 
 def dict_to_string(obj, level = 0):
   strings = []
@@ -68,7 +71,7 @@ def run_flow(message: str,
         payload["tweaks"] = tweaks
     if application_token:
         headers = {"Authorization": "Bearer " + application_token, "Content-Type": "application/json"}
-    response = requests.post(api_url, json=payload, headers=headers, timeout=60)
+    response = requests.post(api_url, json=payload, headers=headers)
    
     return json.loads(response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"])
 

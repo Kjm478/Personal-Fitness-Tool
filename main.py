@@ -1,7 +1,7 @@
 import streamlit as st
 from profiles import create_profile, get_notes, get_profile
 from form_submit import update_personal_data, add_note, delete_note
-from AI import get_macros
+from AI import get_macros, get_askai
 
 st.title("Personal Fitness Tool")
 
@@ -71,6 +71,14 @@ def notes_add():
         else:
             st.warning("Please enter a note")
 
+@st.fragment()
+def ask_ai(): 
+    st.subheader("Ask AI")
+    user_question = st.text_input("Ask a question")
+    if st.button("Ask AI"):
+        result = get_askai(user_question, st.session_state.profile)
+        st.write(result)
+
 @st.fragment
 def macros(): 
     profile = st.session_state.profile
@@ -116,7 +124,8 @@ def forms():
     personal_data_form()
     goals_form()
     macros()
-    #notes_add()
+    notes_add()
+    ask_ai()
     
 if __name__ == "__main__":
     forms()

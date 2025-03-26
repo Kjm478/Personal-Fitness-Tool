@@ -72,7 +72,11 @@ def run_flow(message: str,
     if application_token:
         headers = {"Authorization": "Bearer " + application_token, "Content-Type": "application/json"}
     response = requests.post(api_url, json=payload, headers=headers)
+    
+    if endpoint == "askai":
+        return (response.json()["outputs"][0]["outputs"][0]["results"]["message"]["data"]["text"])
    
     return json.loads(response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"])
 
-
+if __name__ == "__main__":
+  print(get_askai("create a leg day routine for me", {"calories": 2000, "protein": 100, "carbs": 200, "fat": 50}))

@@ -1,6 +1,7 @@
 import requests
 from typing import Optional
 import os
+import json 
 
 BASE_API_URL = "http://127.0.0.1:7860"
 
@@ -19,7 +20,7 @@ def dict_to_string(obj, level = 0):
   elif isinstance(obj, list):
     for idx, item in enumerate(obj):
       nested = dict_to_string(item, level + 1)
-      strings.append(f"{indent}item{idx+ 1}:{"nested"}")
+      strings.append(f"{indent}item{idx+ 1}:{nested}")
   else:
     strings.append(f"{indent}{obj}")
   return ",".join(strings)
@@ -49,8 +50,8 @@ def get_macros(profile, goals):
   return run_flow("", endpoint = "macros",langflow_id= "f9586dee-c724-486d-8589-e3f7d4f64b8e" , tweaks=TWEAKS)
 
 def run_flow(message: str,
-  endpoint: str,
-  langflow_id: str, 
+  endpoint: str, 
+  langflow_id: str,
   output_type: str = "chat",
   input_type: str = "chat",
   tweaks: Optional[dict] = None,
@@ -69,9 +70,6 @@ def run_flow(message: str,
         headers = {"Authorization": "Bearer " + application_token, "Content-Type": "application/json"}
     response = requests.post(api_url, json=payload, headers=headers, timeout=60)
    
-    return response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"]
- 
-if __name__ == "__main__":
-  print(get_macros("I want to lose weight", "I want to lose 10 pounds in 2 months"))
-  print(get_askai("how much fat should i loose?", "I want to lose weight"))
+    return json.loads(response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"])
+
 

@@ -32,7 +32,7 @@ def get_askai(question, profile):
       "input_value": question
      },
     "TextInput-IQI7V": {
-    "input_value": profile
+    "input_value": dict_to_string(profile)
     },
     }
   return run_flow(question, endpoint = "askai",langflow_id= "4d835698-5b3a-42aa-be1b-15e65fc2b676",  tweaks=TWEAKS)

@@ -4,6 +4,26 @@ import os
 
 BASE_API_URL = "http://127.0.0.1:7860"
 
+def dict_to_string(obj, level = 0):
+  strings = []
+  indent = "  " * level #indentation for nested levels
+  
+  if isinstance(obj, dict):
+    for key, value in obj.items():
+      if isinstance(value, dict):
+        strings.append(f"{indent}{key}:")
+        strings.extend(dict_to_string(value, level + 1))
+      else:
+        strings.append(f"{indent}{key}: {value}")
+        
+  elif isinstance(obj, list):
+    for idx, item in enumerate(obj):
+      nested = dict_to_string(item, level + 1)
+      strings.append(f"{indent}item{idx+ 1}:{"nested"}")
+  else:
+    strings.append(f"{indent}{obj}")
+  return ",".join(strings)
+
 
 def get_askai(question, profile): 
   

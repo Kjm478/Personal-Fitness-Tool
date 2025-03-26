@@ -23,8 +23,8 @@ def get_values(_id):
     
 def create_profile(_id):
     profile = get_values(_id)
-    inserted_id = personal_data_collection.insert_one(profile)
-    return inserted_id, profile
+    result = personal_data_collection.insert_one(profile)
+    return result.inserted_id, result
 
 def get_profile(_id):
     return personal_data_collection.find_one({"id": {"$eq": _id}})

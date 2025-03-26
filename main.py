@@ -39,7 +39,7 @@ def goals_form():
     profile = st.session_state.profile
     with st.form("goals_form"):
         st.header("Goals")
-        goals = st.multiselect("Select your goals", ["Muscle Gain", "Fat Loss", "Weight Loss", "Maintain Weight"], default=profile.get("goals", "Muscle Gain"))
+        goals = st.multiselect("Select your goals", ["Muscle Gain", "Fat Loss", "Weight Loss", "Maintain Weight"], default = profile.get("Select your goals", "Muscle Gain"))
         
         goals_submit = st.form_submit_button("Submit")
         if goals_submit:
@@ -48,6 +48,28 @@ def goals_form():
                 st.success("Goals saved successfully!")
         else: 
             st.warning("Please select at least one goal")
+            
+@st.fragment
+def notes_add():
+    st.subheader("Notes:")
+    for i , note in enumerate(st.session_state.notes):
+       cols = st.columns([5, 1])
+       with cols[0]:
+           st.write(note["text"])
+       with cols[1]:
+            if st.button("Delete", key= i):
+                delete_note(note.get("_id"))
+                st.session_state.notes.pop(i)
+                st.rerun()
+    new_note = st.text_area("Add a new note")
+    if st.button("Add Note"):
+        new_note = new_note.strip()
+        if new_note:
+            new_note = add_note(new_note, st.session_state.profile_id)
+            st.session_state.notes.append(new_note)
+            st.rerun()
+        else:
+            st.warning("Please enter a note")
 
 @st.fragment
 def macros(): 
@@ -57,7 +79,7 @@ def macros():
     if nutrition.button("Generate  with AI"): 
         result = get_macros(profile.get("general"), profile.get("goals"))
         profile["nutrition"] = result
-        nutrition.success("Macros generated successfully!")
+        nutrition.success("Nutrition generated successfully!")
         
     with nutrition.form("nutrition_form", border=False):
         col1, col2, col3, col4 = st.columns(4)
@@ -94,6 +116,7 @@ def forms():
     personal_data_form()
     goals_form()
     macros()
+    notes_add()
     
 if __name__ == "__main__":
     forms()

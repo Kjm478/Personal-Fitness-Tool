@@ -1,6 +1,7 @@
 import streamlit as st
 from profiles import create_profile, get_notes, get_profile
 from form_submit import update_personal_data, add_note, delete_note
+from AI import get_macros
 
 st.title("Personal Fitness Tool")
 
@@ -27,10 +28,52 @@ def personal_data_form():
             if all([name, age, weight, height, gender, activities]):
                 with st.spinner("Saving your data..."):
                     # Save data to database
-                    update_personal_data(profile, "general", name = name , weight = weight, height = height , gender = gender, activity = activities, age = age)
+                    st.session_state.profile = update_personal_data(profile, "general", name = name , weight = weight, height = height , gender = gender, activity = activities, age = age)
                     st.success("Data saved successfully!")
             else:
                 st.warning("Please fill out all fields")
+                               
+#goals form 
+@st.fragment
+def goals_form():
+    profile = st.session_state.profile
+    with st.form("goals_form"):
+        st.header("Goals")
+        goals = st.multiselect("Select your goals", ["Muscle Gain", "Fat Loss", "Weight Loss", "Maintain Weight"], default=profile.get("goals", "Muscle Gain"))
+        
+        goals_submit = st.form_submit_button("Submit")
+        if goals_submit:
+            with st.spinner("Saving your goal..."):
+                st.session_state.profile = update_personal_data(profile, "goals", goals = goals)
+                st.success("Goals saved successfully!")
+        else: 
+            st.warning("Please select at least one goal")
+
+@st.fragment
+def macros(): 
+    profile = st.session_state.profile
+    nutrition = st.container(border=True)
+    nutrition.header("Nutrition")
+    if nutrition.button("Generate  with AI"): 
+        result = get_macros(profile.get("general"), profile.get("goals"))
+        profile["nutrition"] = result
+        nutrition.success("Macros generated successfully!")
+        
+    with nutrition.form("nutrition_form", border=False):
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+           calories =  st.number_input("Calories",min_value=0 , step=1 , value=profile["nutrition"].get("calories", 0))
+        with col2:
+            protein = st.number_input("Protein (g)", min_value=0, step=1, value=profile["nutrition"].get("protein", 0))
+        with col3:
+            carbs = st.number_input("Carbs (g)", min_value=0, step=1, value=profile["nutrition"].get("carbs", 0))
+        with col4:
+            fat = st.number_input("Fat (g)", min_value=0, step=1, value=profile["nutrition"].get("fat", 0))
+            
+        if st.form_submit_button("Submit"):
+            with st.spinner("Saving your data..."):
+                st.session_state.profile = update_personal_data(profile, "nutrition", calories = calories, protein = protein, carbs = carbs, fat = fat)
+                st.success("Information saved successfully!")
                
 def forms(): 
     #checking if profile_id exists in the session state
@@ -49,6 +92,8 @@ def forms():
         st.session_state.notes = notes
         
     personal_data_form()
+    goals_form()
+    macros()
     
 if __name__ == "__main__":
     forms()

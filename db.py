@@ -24,7 +24,7 @@ for name in collection_names:
     except:
        pass
         
-personal_data = db.get_collection("personal_data")
-notes = db.get_collection("notes")
+personal_data_collection = db.get_collection("personal_data")
+notes_collection = db.get_collection("notes")
 
-print(db.list_collection_names())
+p

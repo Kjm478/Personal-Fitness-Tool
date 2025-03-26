@@ -51,9 +51,7 @@ def run_flow(message: str,
    
     return response.json()["outputs"][0]["outputs"][0]['results']["text"]["data"]["text"]
  
-res = get_macros("name: kennedy age: 27: wieght: 80kg 175cm ", "I want to losse stomach fat")
-print(res)
-print("\n")
-res = get_askai("how many fats should i burn", "name: kennedy age: 27: wieght: 80kg 175cm ")
-print(res)
+if __name__ == "__main__":
+  print(get_macros("I want to lose weight", "I want to lose 10 pounds in 2 months"))
+  print(get_askai("how much fat should i loose?", "I want to lose weight"))
 

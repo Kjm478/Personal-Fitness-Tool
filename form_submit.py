@@ -11,7 +11,7 @@ def update_personal_data(existing, update_type, **kwargs):
         
     personal_data_collection.update_one({"_id": existing["_id"]}, {"$set": update_field})
     
-def add_note(note, profile_id);
+def add_note(note, profile_id):
     new_note = {"user_id": profile_id, 
                 "text": note, 
                 "$vectorize": note, 
